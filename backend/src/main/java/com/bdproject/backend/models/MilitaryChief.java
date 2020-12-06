@@ -26,20 +26,20 @@ public class MilitaryChief extends Table {
     private String faixa;
 
     @Attribute(name = NRO_DIVISAO)
-    private int nroDivisao;
+    private Integer nroDivisao;
 
     @Attribute(name = NOME_L)
-    private int nomeL;
+    private Integer nomeL;
 
     @Attribute(name = CODIGO_G)
-    private int codigoG;
+    private Integer codigoG;
 
     public MilitaryChief(
             @JsonProperty(CODIGO_CHEF) String codigoChef,
             @JsonProperty(FAIXA) String faixa,
-            @JsonProperty(NRO_DIVISAO) int nroDivisao,
-            @JsonProperty(NOME_L) int nomeL,
-            @JsonProperty(CODIGO_G) int codigoG
+            @JsonProperty(NRO_DIVISAO) Integer nroDivisao,
+            @JsonProperty(NOME_L) Integer nomeL,
+            @JsonProperty(CODIGO_G) Integer codigoG
     ) {
         super(TABLE_NAME);
         this.codigoChef = codigoChef;

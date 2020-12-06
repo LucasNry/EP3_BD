@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.List;
+
 @RestController
 public class MilitaryGroupController {
 
@@ -16,7 +20,7 @@ public class MilitaryGroupController {
     private PostgreSQLDAO dao;
 
     @GetMapping("/militarygroup")
-    public MilitaryGroup getDivision(MilitaryGroup militaryGroup) {
+    public List<MilitaryGroup> getDivision(MilitaryGroup militaryGroup) throws InvocationTargetException, SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         return dao.retrieveMilitaryGroup(militaryGroup);
     }
 

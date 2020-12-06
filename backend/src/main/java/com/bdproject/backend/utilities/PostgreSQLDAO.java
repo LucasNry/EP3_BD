@@ -23,10 +23,9 @@ import java.util.List;
 
 @Component
 public class PostgreSQLDAO extends AbstractDAO {
-    private static final String FIELD_EXPERSSION_TEMPLATE = "%s=\"%s\" ";
+    private static final String FIELD_EXPERSSION_TEMPLATE = "%s='%s', ";
     private static final String QUERY_BASE = "select * from %s where ";
     private static final String EXPRESSION_ENDING_CHAR = ";";
-    private static final String FORMAT_ERROR_MESSAGE = "All table attributes must be annotated with either @PrimaryKey or @Attribute. Please check for unannotated attributes on model %s";
 
     private Connection connection;
 
@@ -37,41 +36,41 @@ public class PostgreSQLDAO extends AbstractDAO {
         statement = connection.createStatement();
     }
 
-    public PostgreSQLDAO() throws SQLException {
+    public PostgreSQLDAO() throws SQLException, ClassNotFoundException {
         init();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Division> retrieveDivision(Division division) throws IllegalAccessException, SQLException, InvocationTargetException, InstantiationException {
+    public List<Division> retrieveDivision(Division division) throws IllegalAccessException, SQLException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         String sqlQuery = mapObjectSelectToQuery(division);
         return (List<Division>) retrieve(sqlQuery, Division.class);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<MilitaryGroup> retrieveMilitaryGroup(MilitaryGroup militaryGroup) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException {
+    public List<MilitaryGroup> retrieveMilitaryGroup(MilitaryGroup militaryGroup) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
         String sqlQuery = mapObjectSelectToQuery(militaryGroup);
         return (List<MilitaryGroup>) retrieve(sqlQuery, MilitaryGroup.class);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<WarConflict> retrieveWarConflict(WarConflict warConflict) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException {
+    public List<WarConflict> retrieveWarConflict(WarConflict warConflict) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
         String sqlQuery = mapObjectSelectToQuery(warConflict);
         return (List<WarConflict>) retrieve(sqlQuery, WarConflict.class);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<PoliticalLeader> retrievePoliticalLeader(PoliticalLeader politicalLeader) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException {
+    public List<PoliticalLeader> retrievePoliticalLeader(PoliticalLeader politicalLeader) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
         String sqlQuery = mapObjectSelectToQuery(politicalLeader);
         return (List<PoliticalLeader>) retrieve(sqlQuery, PoliticalLeader.class);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<MilitaryChief> retrieveMilitaryChief(MilitaryChief militaryChief) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException {
+    public List<MilitaryChief> retrieveMilitaryChief(MilitaryChief militaryChief) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
         String sqlQuery = mapObjectSelectToQuery(militaryChief);
         return (List<MilitaryChief>) retrieve(sqlQuery, MilitaryChief.class);
     }
@@ -106,7 +105,7 @@ public class PostgreSQLDAO extends AbstractDAO {
 
     }
 
-    private Object retrieve(String sqlQuery, Class<?> clazz) throws SQLException, IllegalAccessException, InstantiationException, InvocationTargetException {
+    private Object retrieve(String sqlQuery, Class<?> clazz) throws SQLException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         List<Object> returnList = new ArrayList<>();
 
         ResultSet results = statement.executeQuery(sqlQuery);
@@ -125,36 +124,43 @@ public class PostgreSQLDAO extends AbstractDAO {
         finalQuery.append(String.format(QUERY_BASE, instance.getTableName()));
 
         Class<Table> objectClazz = (Class<Table>) instance.getClass();
-        Field[] fields = objectClazz.getFields();
+        Field[] fields = objectClazz.getDeclaredFields();
 
         for (Field field : fields) {
             if (field.isAnnotationPresent(PrimaryKey.class)) {
+                field.setAccessible(true);
                 String fieldName = field.getAnnotation(PrimaryKey.class).name();
                 Object fieldValue = field.get(instance);
 
-                String fieldExpression = String.format(FIELD_EXPERSSION_TEMPLATE, fieldName, fieldValue);
-                finalQuery.append(fieldExpression);
+                if (fieldValue != null) {
+                    String fieldExpression = String.format(FIELD_EXPERSSION_TEMPLATE, fieldName, fieldValue);
+                    finalQuery.append(fieldExpression);
+                    field.setAccessible(false);
+                }
             }
         }
 
+        finalQuery.delete(finalQuery.length() - 2, finalQuery.length());
         finalQuery.append(EXPRESSION_ENDING_CHAR);
 
         return finalQuery.toString();
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T mapResultToObject(ResultSet result, Class<T> objectClazz) throws IllegalAccessException, InvocationTargetException, InstantiationException, SQLException {
-        T returnObject = (T) objectClazz.getConstructors()[0].newInstance();
-        Field[] fields = objectClazz.getFields();
+    private <T> T mapResultToObject(ResultSet result, Class<T> objectClazz) throws IllegalAccessException, InvocationTargetException, InstantiationException, SQLException, NoSuchMethodException {
+        T returnObject = (T) objectClazz.getConstructor(new Class[]{}).newInstance();
+        Field[] fields = objectClazz.getDeclaredFields();
 
         for (Field field : fields) {
+            field.setAccessible(true);
+
             String fieldName;
             if (field.isAnnotationPresent(PrimaryKey.class)) {
                 fieldName = field.getAnnotation(PrimaryKey.class).name();
             } else if (field.isAnnotationPresent(Attribute.class)) {
                 fieldName = field.getAnnotation(Attribute.class).name();
             } else {
-                throw new IllegalArgumentException(String.format(FORMAT_ERROR_MESSAGE, objectClazz.getName()));
+                continue;
             }
 
             Object fieldValue;
@@ -169,6 +175,8 @@ public class PostgreSQLDAO extends AbstractDAO {
             }
 
             field.set(returnObject, fieldValue);
+
+            field.setAccessible(false);
         }
 
         return returnObject;

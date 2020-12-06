@@ -24,12 +24,12 @@ public class MilitaryGroup extends Table {
     private String nomeGrupo;
 
     @Attribute(name = NUM_BAIXAS_G)
-    private int numBaixasG;
+    private Integer numBaixasG;
 
     public MilitaryGroup(
             @JsonProperty(CODIGO_G) String codigoG,
             @JsonProperty(NOME_GRUPO) String nomeGrupo,
-            @JsonProperty(NUM_BAIXAS_G) int numBaixasG
+            @JsonProperty(NUM_BAIXAS_G) Integer numBaixasG
     ) {
         super(TABLE_NAME);
         this.codigoG = codigoG;

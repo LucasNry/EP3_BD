@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.List;
+
 @RestController
 public class PoliticalLeaderController {
 
@@ -16,7 +20,7 @@ public class PoliticalLeaderController {
     private PostgreSQLDAO dao;
 
     @GetMapping("/politicalleader")
-    public PoliticalLeader getDivision(PoliticalLeader politicalLeader) {
+    public List<PoliticalLeader> getDivision(PoliticalLeader politicalLeader) throws InvocationTargetException, SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         return dao.retrievePoliticalLeader(politicalLeader);
     }
 

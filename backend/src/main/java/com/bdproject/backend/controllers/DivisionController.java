@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.List;
+
 @RestController
 public class DivisionController {
 
@@ -17,7 +21,7 @@ public class DivisionController {
     private PostgreSQLDAO dao;
 
     @GetMapping("/division")
-    public Division getDivision(@RequestBody Division division) {
+    public List<Division> getDivision(@RequestBody Division division) throws InvocationTargetException, SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         return dao.retrieveDivision(division);
     }
 

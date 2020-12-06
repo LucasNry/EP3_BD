@@ -22,34 +22,34 @@ public class Division extends Table{
     private static final String HOMENS = "homens";
 
     @PrimaryKey(name = NRO_DIVISAO)
-    private int nroDivisao;
+    private Integer nroDivisao;
 
     @PrimaryKey(name = CODIGO_G)
     private String codigoG;
 
     @Attribute(name = NUM_BAIXAS_D)
-    private int numBaixasD;
+    private Integer numBaixasD;
 
     @Attribute(name = BARCOS)
-    private int barcos;
+    private Integer barcos;
 
     @Attribute(name = TANQUES)
-    private int tanques;
+    private Integer tanques;
 
     @Attribute(name = AVIOES)
-    private int avioes;
+    private Integer avioes;
 
     @Attribute(name = HOMENS)
-    private int homens;
+    private Integer homens;
 
     public Division(
-            @JsonProperty(NRO_DIVISAO) int nroDivisao,
+            @JsonProperty(NRO_DIVISAO) Integer nroDivisao,
             @JsonProperty(CODIGO_G) String codigoG,
-            @JsonProperty(NUM_BAIXAS_D) int numBaixasD,
-            @JsonProperty(BARCOS) int barcos,
-            @JsonProperty(TANQUES) int tanques,
-            @JsonProperty(AVIOES) int avioes,
-            @JsonProperty(HOMENS) int homens
+            @JsonProperty(NUM_BAIXAS_D) Integer numBaixasD,
+            @JsonProperty(BARCOS) Integer barcos,
+            @JsonProperty(TANQUES) Integer tanques,
+            @JsonProperty(AVIOES) Integer avioes,
+            @JsonProperty(HOMENS) Integer homens
     ) {
         super(TABLE_NAME);
         this.nroDivisao = nroDivisao;
@@ -59,5 +59,9 @@ public class Division extends Table{
         this.tanques = tanques;
         this.avioes = avioes;
         this.homens = homens;
+    }
+
+    public Division() {
+        super(TABLE_NAME);
     }
 }
