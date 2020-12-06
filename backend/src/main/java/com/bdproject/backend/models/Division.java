@@ -22,13 +22,13 @@ public class Division extends Table{
     private static final String HOMENS = "homens";
 
     @PrimaryKey(name = NRO_DIVISAO)
-    private String nroDivisao;
+    private int nroDivisao;
 
     @PrimaryKey(name = CODIGO_G)
     private String codigoG;
 
     @Attribute(name = NUM_BAIXAS_D)
-    private String numBaixasD;
+    private int numBaixasD;
 
     @Attribute(name = BARCOS)
     private int barcos;
@@ -43,9 +43,9 @@ public class Division extends Table{
     private int homens;
 
     public Division(
-            @JsonProperty(NRO_DIVISAO) String nroDivisao,
+            @JsonProperty(NRO_DIVISAO) int nroDivisao,
             @JsonProperty(CODIGO_G) String codigoG,
-            @JsonProperty(NUM_BAIXAS_D) String numBaixasD,
+            @JsonProperty(NUM_BAIXAS_D) int numBaixasD,
             @JsonProperty(BARCOS) int barcos,
             @JsonProperty(TANQUES) int tanques,
             @JsonProperty(AVIOES) int avioes,

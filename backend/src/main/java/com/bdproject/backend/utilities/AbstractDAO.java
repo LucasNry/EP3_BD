@@ -6,16 +6,20 @@ import com.bdproject.backend.models.MilitaryGroup;
 import com.bdproject.backend.models.PoliticalLeader;
 import com.bdproject.backend.models.WarConflict;
 
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.List;
+
 public abstract class AbstractDAO {
-    public abstract Division retrieveDivision(Division division);
+    public abstract List<Division> retrieveDivision(Division division) throws IllegalAccessException, SQLException, InvocationTargetException, InstantiationException;
 
-    public abstract MilitaryGroup retrieveMilitaryGroup(MilitaryGroup militaryGroup);
+    public abstract List<MilitaryGroup> retrieveMilitaryGroup(MilitaryGroup militaryGroup) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException;
 
-    public abstract WarConflict retrieveWarConflict(WarConflict warConflict);
+    public abstract List<WarConflict> retrieveWarConflict(WarConflict warConflict) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException;
 
-    public abstract PoliticalLeader retrievePoliticalLeader(PoliticalLeader politicalLeader);
+    public abstract List<PoliticalLeader> retrievePoliticalLeader(PoliticalLeader politicalLeader) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException;
 
-    public abstract MilitaryChief retrieveMilitaryChief(MilitaryChief militaryChief);
+    public abstract List<MilitaryChief> retrieveMilitaryChief(MilitaryChief militaryChief) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException;
 
     public abstract void saveDivision(Division division);
 

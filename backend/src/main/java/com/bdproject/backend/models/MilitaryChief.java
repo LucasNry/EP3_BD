@@ -26,7 +26,7 @@ public class MilitaryChief extends Table {
     private String faixa;
 
     @Attribute(name = NRO_DIVISAO)
-    private String nroDivisao;
+    private int nroDivisao;
 
     @Attribute(name = NOME_L)
     private int nomeL;
@@ -37,7 +37,7 @@ public class MilitaryChief extends Table {
     public MilitaryChief(
             @JsonProperty(CODIGO_CHEF) String codigoChef,
             @JsonProperty(FAIXA) String faixa,
-            @JsonProperty(NRO_DIVISAO) String nroDivisao,
+            @JsonProperty(NRO_DIVISAO) int nroDivisao,
             @JsonProperty(NOME_L) int nomeL,
             @JsonProperty(CODIGO_G) int codigoG
     ) {
