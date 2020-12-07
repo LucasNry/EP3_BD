@@ -48,4 +48,8 @@ public class MilitaryChief extends Table {
         this.nomeL = nomeL;
         this.codigoG = codigoG;
     }
+
+    public MilitaryChief() {
+        super(TABLE_NAME);
+    }
 }

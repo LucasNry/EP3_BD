@@ -48,4 +48,8 @@ public class WarConflict extends Table {
         this.numFeridos = numFeridos;
         this.numMortos = numMortos;
     }
+
+    public WarConflict() {
+        super(TABLE_NAME);
+    }
 }

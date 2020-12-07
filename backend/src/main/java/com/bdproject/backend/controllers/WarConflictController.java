@@ -1,6 +1,8 @@
 package com.bdproject.backend.controllers;
 
 import com.bdproject.backend.models.WarConflict;
+import com.bdproject.backend.models.response.GetResponse;
+import com.bdproject.backend.models.response.PostResponse;
 import com.bdproject.backend.utilities.PostgreSQLDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.List;
 
 @RestController
 public class WarConflictController {
@@ -20,18 +21,24 @@ public class WarConflictController {
     private PostgreSQLDAO dao;
 
     @GetMapping("/warconflict")
-    public List<WarConflict> getDivision(WarConflict warConflict) throws InvocationTargetException, SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        return dao.retrieveWarConflict(warConflict);
+    public GetResponse<WarConflict> getDivision(WarConflict warConflict) throws InvocationTargetException, SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        return new GetResponse<>(dao.retrieveWarConflict(warConflict));
     }
 
     @PostMapping("/warconflict")
     public ResponseEntity postDivision(WarConflict warConflict) {
         try {
-            dao.saveWarConflict(warConflict);
+            boolean success = dao.saveWarConflict(warConflict);
+            PostResponse response = new PostResponse(success);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            PostResponse response = new PostResponse(false);
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(response);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

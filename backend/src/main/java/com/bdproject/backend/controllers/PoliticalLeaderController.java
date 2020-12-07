@@ -1,6 +1,8 @@
 package com.bdproject.backend.controllers;
 
 import com.bdproject.backend.models.PoliticalLeader;
+import com.bdproject.backend.models.response.GetResponse;
+import com.bdproject.backend.models.response.PostResponse;
 import com.bdproject.backend.utilities.PostgreSQLDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.List;
 
 @RestController
 public class PoliticalLeaderController {
@@ -20,18 +21,24 @@ public class PoliticalLeaderController {
     private PostgreSQLDAO dao;
 
     @GetMapping("/politicalleader")
-    public List<PoliticalLeader> getDivision(PoliticalLeader politicalLeader) throws InvocationTargetException, SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        return dao.retrievePoliticalLeader(politicalLeader);
+    public GetResponse<PoliticalLeader> getDivision(PoliticalLeader politicalLeader) throws InvocationTargetException, SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        return new GetResponse<>(dao.retrievePoliticalLeader(politicalLeader));
     }
 
     @PostMapping("/politicalleader")
     public ResponseEntity postDivision(PoliticalLeader politicalLeader) {
         try {
-            dao.savePoliticalLeader(politicalLeader);
+            boolean success = dao.savePoliticalLeader(politicalLeader);
+            PostResponse response = new PostResponse(success);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            PostResponse response = new PostResponse(false);
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(response);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

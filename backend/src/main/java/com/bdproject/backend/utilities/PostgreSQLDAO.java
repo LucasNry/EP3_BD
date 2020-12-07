@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.UnexpectedException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -24,10 +25,15 @@ import java.util.List;
 @Component
 public class PostgreSQLDAO extends AbstractDAO {
     private static final String FIELD_EXPERSSION_TEMPLATE = "%s='%s' and ";
-    private static final String SELECT_QUERY_BASE = "select * from %s where ";
+    private static final String SELECT_QUERY_BASE = "select * from %s";
+    private static final String FILTER_BASE = " where ";
     private static final String INSERT_QUERY_BASE = "INSERT INTO %s (%s) VALUES(%s);";
+    private static final String UPDATE_QUERY_BASE = "UPDATE %s set %s where %s";
     private static final String SEPARATOR = ", ";
     private static final String EXPRESSION_ENDING_CHAR = ";";
+
+    private static final String COULD_NOT_FIND_ERROR_MESSAGE = "Could not find an Object with the given key. Please check your input and try again";
+    private static final String MULTIPLE_OBJECTS_ERROR_MESSAGE = "Somehow a key returned more than one item. Please fix your database and try again";
 
     private Connection connection;
 
@@ -90,10 +96,24 @@ public class PostgreSQLDAO extends AbstractDAO {
     }
 
     @Override
-    @Deprecated
-    public boolean saveDivisionIntoMilitaryGroup(MilitaryGroup militaryGroup, Division division) throws IllegalAccessException { // WIP
-        String sqlQuery = mapObjectToInsertQuery(division);
-        return save(sqlQuery);
+    public boolean saveDivisionIntoMilitaryGroup(Division division, MilitaryGroup militaryGroup) throws IllegalAccessException, SQLException, InstantiationException, NoSuchMethodException, InvocationTargetException, UnexpectedException {
+        List<MilitaryGroup> groupList = retrieveMilitaryGroup(militaryGroup);
+        List<Division> divisionList = retrieveDivision(division);
+
+        if (groupList.size() <= 0 || divisionList.size() <= 0) {
+            throw new IllegalArgumentException(COULD_NOT_FIND_ERROR_MESSAGE);
+        }
+
+        if (groupList.size() > 1 || divisionList.size() > 1) {
+            throw new UnexpectedException(MULTIPLE_OBJECTS_ERROR_MESSAGE);
+        }
+
+        MilitaryGroup group = groupList.get(0);
+        Division div = divisionList.get(0);
+
+        div.setCodigoG(group.getCodigoG());
+
+        return updateDivision(div);
     }
 
     @Override
@@ -111,6 +131,12 @@ public class PostgreSQLDAO extends AbstractDAO {
     @Override
     public boolean saveMilitaryChief(MilitaryChief militaryChief) throws IllegalAccessException {
         String sqlQuery = mapObjectToInsertQuery(militaryChief);
+        return save(sqlQuery);
+    }
+
+    @Override
+    public boolean updateDivision(Division division) throws IllegalAccessException {
+        String sqlQuery = mapObjectToUpdateQuery(division);
         return save(sqlQuery);
     }
 
@@ -159,6 +185,10 @@ public class PostgreSQLDAO extends AbstractDAO {
 
             Object fieldValue = field.get(instance);
 
+            if (String.class.equals(field.getType())) {
+                fieldValue = "'" + fieldValue + "'";
+            }
+
             if (fieldValue != null) {
                 propertyString.append(fieldName).append(SEPARATOR);
                 valueString.append(fieldValue).append(SEPARATOR);
@@ -173,9 +203,17 @@ public class PostgreSQLDAO extends AbstractDAO {
     }
 
     @SuppressWarnings("unchecked")
+    private String mapObjectToUpdateQuery(Division instance) throws IllegalAccessException { // This function sucks, but I'm too fucking tired to write it any better
+        return String.format(UPDATE_QUERY_BASE,
+                instance.getTableName(),
+                String.format("codigog = %s", instance.getCodigoG()),
+                String.format("nrodivisao = %s", instance.getNroDivisao())
+        );
+    }
+
+    @SuppressWarnings("unchecked")
     private String mapObjectToSelectQuery(Table instance) throws IllegalAccessException {
         StringBuilder finalQuery = new StringBuilder();
-        finalQuery.append(String.format(SELECT_QUERY_BASE, instance.getTableName()));
 
         Class<Table> objectClazz = (Class<Table>) instance.getClass();
         Field[] fields = objectClazz.getDeclaredFields();
@@ -194,8 +232,16 @@ public class PostgreSQLDAO extends AbstractDAO {
             }
         }
 
-        finalQuery.delete(finalQuery.length() - 5, finalQuery.length());
-        finalQuery.append(EXPRESSION_ENDING_CHAR);
+        String selectBase = String.format(SELECT_QUERY_BASE, instance.getTableName());
+
+        if (finalQuery.length() > 0) {
+            finalQuery.delete(finalQuery.length() - 5, finalQuery.length());
+            finalQuery.insert(0, selectBase + FILTER_BASE);
+            finalQuery.append(EXPRESSION_ENDING_CHAR);
+        } else {
+            finalQuery.append(selectBase).append(EXPRESSION_ENDING_CHAR);
+        }
+
 
         return finalQuery.toString();
     }

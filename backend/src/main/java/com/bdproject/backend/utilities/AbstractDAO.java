@@ -7,6 +7,7 @@ import com.bdproject.backend.models.PoliticalLeader;
 import com.bdproject.backend.models.WarConflict;
 
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.UnexpectedException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -25,11 +26,13 @@ public abstract class AbstractDAO {
 
     public abstract boolean saveMilitaryGroup(MilitaryGroup militaryGroup) throws IllegalAccessException;
 
-    public abstract boolean saveDivisionIntoMilitaryGroup(MilitaryGroup militaryGroup, Division division) throws IllegalAccessException;
+    public abstract boolean saveDivisionIntoMilitaryGroup(Division division, MilitaryGroup militaryGroup) throws IllegalAccessException, SQLException, InstantiationException, NoSuchMethodException, InvocationTargetException, UnexpectedException;
 
     public abstract boolean saveWarConflict(WarConflict warConflict) throws IllegalAccessException;
 
     public abstract boolean savePoliticalLeader(PoliticalLeader politicalLeader) throws IllegalAccessException;
 
     public abstract boolean saveMilitaryChief(MilitaryChief militaryChief) throws IllegalAccessException;
+
+    public abstract boolean updateDivision(Division division) throws IllegalAccessException;
 }

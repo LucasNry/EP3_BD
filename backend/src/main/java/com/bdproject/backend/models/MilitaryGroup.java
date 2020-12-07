@@ -36,4 +36,8 @@ public class MilitaryGroup extends Table {
         this.nomeGrupo = nomeGrupo;
         this.numBaixasG = numBaixasG;
     }
+
+    public MilitaryGroup() {
+        super(TABLE_NAME);
+    }
 }

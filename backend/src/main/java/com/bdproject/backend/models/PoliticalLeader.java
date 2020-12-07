@@ -36,4 +36,8 @@ public class PoliticalLeader extends Table {
         this.codigoG = codigoG;
         this.apoios = apoios;
     }
+
+    public PoliticalLeader() {
+        super(TABLE_NAME);
+    }
 }

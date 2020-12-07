@@ -1,6 +1,8 @@
 package com.bdproject.backend.controllers;
 
 import com.bdproject.backend.models.MilitaryChief;
+import com.bdproject.backend.models.response.GetResponse;
+import com.bdproject.backend.models.response.PostResponse;
 import com.bdproject.backend.utilities.PostgreSQLDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.List;
 
 @RestController
 public class MilitaryChiefController {
@@ -20,18 +21,24 @@ public class MilitaryChiefController {
     private PostgreSQLDAO dao;
 
     @GetMapping("/militarychief")
-    public List<MilitaryChief> getDivision(MilitaryChief militaryChief) throws InvocationTargetException, SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        return dao.retrieveMilitaryChief(militaryChief);
+    public GetResponse<MilitaryChief> getDivision(MilitaryChief militaryChief) throws InvocationTargetException, SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        return new GetResponse<>(dao.retrieveMilitaryChief(militaryChief));
     }
 
     @PostMapping("/militarychief")
     public ResponseEntity postDivision(MilitaryChief militaryChief) {
         try {
-            dao.saveMilitaryChief(militaryChief);
+            boolean success = dao.saveMilitaryChief(militaryChief);
+            PostResponse response = new PostResponse(success);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            PostResponse response = new PostResponse(false);
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(response);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
