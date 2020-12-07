@@ -23,8 +23,10 @@ import java.util.List;
 
 @Component
 public class PostgreSQLDAO extends AbstractDAO {
-    private static final String FIELD_EXPERSSION_TEMPLATE = "%s='%s', ";
-    private static final String QUERY_BASE = "select * from %s where ";
+    private static final String FIELD_EXPERSSION_TEMPLATE = "%s='%s' and ";
+    private static final String SELECT_QUERY_BASE = "select * from %s where ";
+    private static final String INSERT_QUERY_BASE = "INSERT INTO %s (%s) VALUES(%s);";
+    private static final String SEPARATOR = ", ";
     private static final String EXPRESSION_ENDING_CHAR = ";";
 
     private Connection connection;
@@ -36,92 +38,144 @@ public class PostgreSQLDAO extends AbstractDAO {
         statement = connection.createStatement();
     }
 
-    public PostgreSQLDAO() throws SQLException, ClassNotFoundException {
+    public PostgreSQLDAO() throws SQLException {
         init();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<Division> retrieveDivision(Division division) throws IllegalAccessException, SQLException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-        String sqlQuery = mapObjectSelectToQuery(division);
+        String sqlQuery = mapObjectToSelectQuery(division);
         return (List<Division>) retrieve(sqlQuery, Division.class);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<MilitaryGroup> retrieveMilitaryGroup(MilitaryGroup militaryGroup) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
-        String sqlQuery = mapObjectSelectToQuery(militaryGroup);
+        String sqlQuery = mapObjectToSelectQuery(militaryGroup);
         return (List<MilitaryGroup>) retrieve(sqlQuery, MilitaryGroup.class);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<WarConflict> retrieveWarConflict(WarConflict warConflict) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
-        String sqlQuery = mapObjectSelectToQuery(warConflict);
+        String sqlQuery = mapObjectToSelectQuery(warConflict);
         return (List<WarConflict>) retrieve(sqlQuery, WarConflict.class);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<PoliticalLeader> retrievePoliticalLeader(PoliticalLeader politicalLeader) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
-        String sqlQuery = mapObjectSelectToQuery(politicalLeader);
+        String sqlQuery = mapObjectToSelectQuery(politicalLeader);
         return (List<PoliticalLeader>) retrieve(sqlQuery, PoliticalLeader.class);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<MilitaryChief> retrieveMilitaryChief(MilitaryChief militaryChief) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
-        String sqlQuery = mapObjectSelectToQuery(militaryChief);
+        String sqlQuery = mapObjectToSelectQuery(militaryChief);
         return (List<MilitaryChief>) retrieve(sqlQuery, MilitaryChief.class);
     }
 
     @Override
-    public void saveDivision(Division division) {
-
+    public boolean saveDivision(Division division) throws IllegalAccessException {
+        String sqlQuery = mapObjectToInsertQuery(division);
+        return save(sqlQuery);
     }
 
     @Override
-    public void saveMilitaryGroup(MilitaryGroup militaryGroup) {
-
+    public boolean saveMilitaryGroup(MilitaryGroup militaryGroup) throws IllegalAccessException {
+        String sqlQuery = mapObjectToInsertQuery(militaryGroup);
+        return save(sqlQuery);
     }
 
     @Override
-    public void saveDivisionIntoMilitaryGroup(String militaryGroupId, Division division) {
-
+    @Deprecated
+    public boolean saveDivisionIntoMilitaryGroup(MilitaryGroup militaryGroup, Division division) throws IllegalAccessException { // WIP
+        String sqlQuery = mapObjectToInsertQuery(division);
+        return save(sqlQuery);
     }
 
     @Override
-    public void saveWarConflict(WarConflict warConflict) {
-
+    public boolean saveWarConflict(WarConflict warConflict) throws IllegalAccessException {
+        String sqlQuery = mapObjectToInsertQuery(warConflict);
+        return save(sqlQuery);
     }
 
     @Override
-    public void savePoliticalLeader(PoliticalLeader politicalLeader) {
-
+    public boolean savePoliticalLeader(PoliticalLeader politicalLeader) throws IllegalAccessException {
+        String sqlQuery = mapObjectToInsertQuery(politicalLeader);
+        return save(sqlQuery);
     }
 
     @Override
-    public void saveMilitaryChief(MilitaryChief militaryChief) {
-
+    public boolean saveMilitaryChief(MilitaryChief militaryChief) throws IllegalAccessException {
+        String sqlQuery = mapObjectToInsertQuery(militaryChief);
+        return save(sqlQuery);
     }
 
     private Object retrieve(String sqlQuery, Class<?> clazz) throws SQLException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         List<Object> returnList = new ArrayList<>();
 
-        ResultSet results = statement.executeQuery(sqlQuery);
+        ResultSet result = statement.executeQuery(sqlQuery);
 
-        while (results.next()) {
-            Object obj = mapResultToObject(results, clazz);
+        while (result.next()) {
+            Object obj = mapResultToObject(result, clazz);
             returnList.add(obj);
         }
 
         return returnList;
     }
 
+    private boolean save(String insertQuery) {
+        try {
+            statement.executeUpdate(insertQuery);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @SuppressWarnings("unchecked")
-    private String mapObjectSelectToQuery(Table instance) throws IllegalAccessException {
+    private String mapObjectToInsertQuery(Table instance) throws IllegalAccessException {
+        StringBuilder propertyString = new StringBuilder();
+        StringBuilder valueString = new StringBuilder();
+
+        Class<Table> objectClazz = (Class<Table>) instance.getClass();
+        Field[] fields = objectClazz.getDeclaredFields();
+
+        for (Field field : fields) {
+            String fieldName;
+
+            if (field.isAnnotationPresent(PrimaryKey.class)) {
+                field.setAccessible(true);
+                fieldName = field.getAnnotation(PrimaryKey.class).name();
+            } else if (field.isAnnotationPresent(Attribute.class)) {
+                field.setAccessible(true);
+                fieldName = field.getAnnotation(Attribute.class).name();
+            } else {
+                continue;
+            }
+
+            Object fieldValue = field.get(instance);
+
+            if (fieldValue != null) {
+                propertyString.append(fieldName).append(SEPARATOR);
+                valueString.append(fieldValue).append(SEPARATOR);
+            }
+        }
+
+        propertyString.delete(propertyString.length() - 2, propertyString.length());
+
+        valueString.delete(valueString.length() - 2, valueString.length());
+
+        return String.format(INSERT_QUERY_BASE, instance.getTableName(), propertyString.toString(), valueString.toString());
+    }
+
+    @SuppressWarnings("unchecked")
+    private String mapObjectToSelectQuery(Table instance) throws IllegalAccessException {
         StringBuilder finalQuery = new StringBuilder();
-        finalQuery.append(String.format(QUERY_BASE, instance.getTableName()));
+        finalQuery.append(String.format(SELECT_QUERY_BASE, instance.getTableName()));
 
         Class<Table> objectClazz = (Class<Table>) instance.getClass();
         Field[] fields = objectClazz.getDeclaredFields();
@@ -140,7 +194,7 @@ public class PostgreSQLDAO extends AbstractDAO {
             }
         }
 
-        finalQuery.delete(finalQuery.length() - 2, finalQuery.length());
+        finalQuery.delete(finalQuery.length() - 5, finalQuery.length());
         finalQuery.append(EXPRESSION_ENDING_CHAR);
 
         return finalQuery.toString();

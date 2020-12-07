@@ -1,6 +1,7 @@
 package com.bdproject.backend.controllers;
 
 import com.bdproject.backend.models.Division;
+import com.bdproject.backend.models.response.PostResponse;
 import com.bdproject.backend.utilities.PostgreSQLDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +28,16 @@ public class DivisionController {
 
     @PostMapping("/division")
     public ResponseEntity postDivision(@RequestBody Division division) {
+        PostResponse response = new PostResponse();
         try {
-            dao.saveDivision(division);
+            boolean success = dao.saveDivision(division);
+            response.setSuccess(success);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 }

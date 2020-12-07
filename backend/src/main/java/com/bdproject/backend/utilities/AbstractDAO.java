@@ -21,15 +21,15 @@ public abstract class AbstractDAO {
 
     public abstract List<MilitaryChief> retrieveMilitaryChief(MilitaryChief militaryChief) throws IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException;
 
-    public abstract void saveDivision(Division division);
+    public abstract boolean saveDivision(Division division) throws IllegalAccessException;
 
-    public abstract void saveMilitaryGroup(MilitaryGroup militaryGroup);
+    public abstract boolean saveMilitaryGroup(MilitaryGroup militaryGroup) throws IllegalAccessException;
 
-    public abstract void saveDivisionIntoMilitaryGroup(String militaryGroupId, Division division);
+    public abstract boolean saveDivisionIntoMilitaryGroup(MilitaryGroup militaryGroup, Division division) throws IllegalAccessException;
 
-    public abstract void saveWarConflict(WarConflict warConflict);
+    public abstract boolean saveWarConflict(WarConflict warConflict) throws IllegalAccessException;
 
-    public abstract void savePoliticalLeader(PoliticalLeader politicalLeader);
+    public abstract boolean savePoliticalLeader(PoliticalLeader politicalLeader) throws IllegalAccessException;
 
-    public abstract void saveMilitaryChief(MilitaryChief militaryChief);
+    public abstract boolean saveMilitaryChief(MilitaryChief militaryChief) throws IllegalAccessException;
 }
