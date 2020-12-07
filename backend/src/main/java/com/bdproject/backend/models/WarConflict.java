@@ -28,10 +28,10 @@ public class WarConflict extends Table {
     @Attribute(name = TIPO_CONF)
     private String tipoConf;
 
-    @PrimaryKey(name = NUM_FERIDOS)
+    @Attribute(name = NUM_FERIDOS)
     private String numFeridos;
 
-    @PrimaryKey(name = NUM_MORTOS)
+    @Attribute(name = NUM_MORTOS)
     private String numMortos;
 
     public WarConflict(

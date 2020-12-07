@@ -3,7 +3,7 @@ package com.bdproject.backend.models;
 import lombok.Getter;
 
 @Getter
-public class Table {
+public abstract class Table {
     private String tableName;
 
     public Table(String tableName) {

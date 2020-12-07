@@ -15,6 +15,7 @@ public class PoliticalLeader extends Table {
     private static final String TABLE_NAME = "liderpolitico";
     private static final String NOME_L = "nomel";
     private static final String CODIGO_G = "codigoG";
+    private static final String MILITARY_GROUP = "militarygroup";
     private static final String APOIOS = "apoios";
 
     @PrimaryKey(name = NOME_L)
