@@ -1,0 +1,18 @@
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
+}
+
+.TabContainer {
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  border-radius: 10px;
+  min-width: 120vh;
+  min-height: 80vh;
+  background-color: white;
+}
