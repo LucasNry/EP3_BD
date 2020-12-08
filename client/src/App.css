@@ -8,11 +8,56 @@
 }
 
 .TabContainer {
+  flex-direction: column;
   display: flex;
-  justify-content: start;
-  align-items: start;
+  justify-content: flex-start;
+  align-items: flex-start;
   border-radius: 10px;
   min-width: 120vh;
   min-height: 80vh;
-  background-color: white;
+  background-color: whitesmoke;
+}
+
+.TabHeader {
+  display: flex;
+  min-width: 100%;
+}
+
+.Tab {
+  padding: 10px;
+  background-color: #515969;
+  color: whitesmoke;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bolder;
+  border-right: 1.5px solid black;
+  min-width: 25vh;
+  transition: ease-in-out 0.1s;
+}
+
+.Tab:hover {
+  bottom: 0;
+  transition: ease-in-out 0.1s;
+  transform: scaleY(1.2);
+  transform-origin: 50% 0%;
+  -webkit-transform: scaleY(1.2);
+  -webkit-transform-origin: 50% 0%;
+  height: 100%;
+}
+
+.Cadastro {
+  margin: auto;
+  text-align: center;
+}
+
+#entityPicker {
+  width: 15em;
+  font-size: medium;
+}
+
+.insertInput {
+  font-size: small;
+}
+
+.propertyName {
+  padding-right: 10px;
 }
