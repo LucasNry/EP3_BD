@@ -4,16 +4,15 @@ import com.bdproject.backend.models.Division;
 import com.bdproject.backend.models.MilitaryChief;
 import com.bdproject.backend.models.MilitaryGroup;
 import com.bdproject.backend.models.PoliticalLeader;
+import com.bdproject.backend.models.Supplies;
 import com.bdproject.backend.models.Table;
 import com.bdproject.backend.models.WarConflict;
 import com.bdproject.backend.models.request.EnrollDivisionRequest;
-import com.bdproject.backend.models.response.GetResponse;
 import com.bdproject.backend.models.response.GenericResponse;
 import com.bdproject.backend.utilities.PostgreSQLDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +46,11 @@ public class PostController {
     @PostMapping("/warconflict")
     public ResponseEntity postWarConflict(@RequestBody WarConflict warConflict) {
         return handlePostRequest(warConflict);
+    }
+
+    @PostMapping("/supplies")
+    public ResponseEntity postSupplies(@RequestBody Supplies supplies) {
+        return handlePostRequest(supplies);
     }
 
     @PostMapping("/division/enroll")

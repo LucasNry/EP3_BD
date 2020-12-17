@@ -15,12 +15,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class PostgreSQLDAO extends AbstractDAO {
     private static final String COULD_NOT_FIND_ERROR_MESSAGE = "Could not find an Object with the given key. Please check your input and try again";
     private static final String MULTIPLE_OBJECTS_ERROR_MESSAGE = "Somehow a key returned more than one item. Please fix your database and try again";
+
+    private static final String AGGREGATE_REGEX = "[A-Z]\\((.*?)\\)";
+    private static final String PARENTHESES_REGEX = "\\((.*?)\\)";
+
+    private static final String MAX = "max";
+    private static final String MIN = "min";
+    private static final String AVG = "avg";
+    private static final String SUM = "sum";
 
     private Connection connection;
 
@@ -39,6 +52,11 @@ public class PostgreSQLDAO extends AbstractDAO {
     public <T extends Table> List<T> retrieveFromModel(T object) throws IllegalAccessException, SQLException, UnsupportedDataTypeException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         String sqlQuery = mapObjectToSelectQuery(object);
         return (List<T>) retrieve(sqlQuery, object.getClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Table> List<T> retrieveFromQuery(String sqlQuery, Class<T> clazz) throws IllegalAccessException, SQLException, UnsupportedDataTypeException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        return (List<T>) retrieve(sqlQuery, clazz);
     }
 
     public <T extends Table> boolean saveFromModel(T object) throws IllegalAccessException {

@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import './App.css';
 import { Tab } from './Tab';
+import { ArmsDealInfo } from './Tabs/ArmsDealInfo';
 import { Cadastro } from './Tabs/Cadastro';
+import { Graph } from './Tabs/Graph';
+import { Top5Conflicts } from './Tabs/Top5Conflicts';
+import { Top5MilitaryGroups } from './Tabs/Top5MilitaryGroups';
 
 interface tabMap {
   [tabName : string] : any
 }
 
 function App() {
-  const tabs : string[] = ["Cadastro", "Cadastro", "Cadastro", "Cadastro", "Cadastro"]
+  const tabs : string[] = ["Cadastro", "Gráfico", "Listagem de Armas", "Top 5 Conflitos", "Top 5 Organizações", "Top 5 Grupos Armados", "Top País"]
   const tabMap : tabMap = {
-    "Cadastro": <Cadastro/>
+    "Cadastro": <Cadastro/>,
+    "Gráfico": <Graph/>,
+    "Listagem de Armas": <ArmsDealInfo/>,
+    "Top 5 Conflitos": <Top5Conflicts/>,
+    "Top 5 Grupos Armados": <Top5MilitaryGroups/>
   }
   const [selectedTab, setTab] : any = useState<string | null>(tabs[0]);
   return (

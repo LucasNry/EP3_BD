@@ -34,6 +34,16 @@
   transition: ease-in-out 0.1s;
 }
 
+.botaoPadrao {
+  font-size: large;
+}
+
+table, th, tr, td {
+  padding: 5px;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
 .Tab:hover {
   bottom: 0;
   transition: ease-in-out 0.1s;

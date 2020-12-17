@@ -9,6 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication
 public class BackendApplication {
 
+	private static final String ADDRESS = "http://localhost:3000";
+
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
 	}
@@ -18,11 +20,18 @@ public class BackendApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/division").allowedOrigins("http://localhost:3000");
-				registry.addMapping("/militarychief").allowedOrigins("http://localhost:3000");
-				registry.addMapping("/militarygroup").allowedOrigins("http://localhost:3000");
-				registry.addMapping("/politicalleader").allowedOrigins("http://localhost:3000");
-				registry.addMapping("/warconflict").allowedOrigins("http://localhost:3000");
+				registry.addMapping("/division").allowedOrigins(ADDRESS);
+				registry.addMapping("/division/query").allowedOrigins(ADDRESS);
+				registry.addMapping("/militarychief").allowedOrigins(ADDRESS);
+				registry.addMapping("/militarychief/query").allowedOrigins(ADDRESS);
+				registry.addMapping("/militarygroup").allowedOrigins(ADDRESS);
+				registry.addMapping("/militarygroup/query").allowedOrigins(ADDRESS);
+				registry.addMapping("/politicalleader").allowedOrigins(ADDRESS);
+				registry.addMapping("/politicalleader/query").allowedOrigins(ADDRESS);
+				registry.addMapping("/warconflict").allowedOrigins(ADDRESS);
+				registry.addMapping("/warconflict/query").allowedOrigins(ADDRESS);
+				registry.addMapping("/supplies").allowedOrigins(ADDRESS);
+				registry.addMapping("/supplies/query").allowedOrigins(ADDRESS);
 			}
 		};
 	}

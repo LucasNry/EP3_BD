@@ -5,6 +5,7 @@ import com.bdproject.backend.models.Division;
 import com.bdproject.backend.models.MilitaryChief;
 import com.bdproject.backend.models.MilitaryGroup;
 import com.bdproject.backend.models.PoliticalLeader;
+import com.bdproject.backend.models.Supplies;
 import com.bdproject.backend.models.Table;
 import com.bdproject.backend.models.WarConflict;
 import com.bdproject.backend.models.response.GetResponse;
@@ -22,32 +23,69 @@ import java.util.Map;
 @RestController
 public class GetController {
 
+    private static final String QUERY_PARAM_NAME = "query";
+
     @Autowired
     private PostgreSQLDAO dao;
 
     @GetMapping("/division")
     public GenericResponse getDivision(@RequestParam Map<String, String> paramMap) throws Exception {
-        return handleGetRequest(mapObjectMapToQueryObject(paramMap, Division.class));
+        return handleGetRequest(mapParamMapToQueryObject(paramMap, Division.class));
+    }
+
+    @GetMapping("/division/query")
+    public GenericResponse getDivisionFromQuery(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToSqlQuery(paramMap), Division.class);
     }
 
     @GetMapping("/militarychief")
     public GenericResponse getMilitaryChief(@RequestParam Map<String, String> paramMap) throws Exception {
-        return handleGetRequest(mapObjectMapToQueryObject(paramMap, MilitaryChief.class));
+        return handleGetRequest(mapParamMapToQueryObject(paramMap, MilitaryChief.class));
+    }
+
+    @GetMapping("/militarychief/query")
+    public GenericResponse getMilitaryChiefFromQuery(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToSqlQuery(paramMap), MilitaryChief.class);
     }
 
     @GetMapping("/militarygroup")
     public GenericResponse getMilitaryGroup(@RequestParam Map<String, String> paramMap) throws Exception {
-        return handleGetRequest(mapObjectMapToQueryObject(paramMap, MilitaryGroup.class));
+        return handleGetRequest(mapParamMapToQueryObject(paramMap, MilitaryGroup.class));
     }
 
-    @GetMapping("/politicalLeader")
+    @GetMapping("/militarygroup/query")
+    public GenericResponse getMilitaryGroupFromQuery(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToSqlQuery(paramMap), MilitaryGroup.class);
+    }
+
+    @GetMapping("/politicalleader")
     public GenericResponse getPoliticalLeader(@RequestParam Map<String, String> paramMap) throws Exception {
-        return handleGetRequest(mapObjectMapToQueryObject(paramMap, PoliticalLeader.class));
+        return handleGetRequest(mapParamMapToQueryObject(paramMap, PoliticalLeader.class));
+    }
+
+    @GetMapping("/politicalleader/query")
+    public GenericResponse getPoliticalLeaderFromQuery(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToSqlQuery(paramMap), PoliticalLeader.class);
     }
 
     @GetMapping("/warconflict")
     public GenericResponse getWarConflict(@RequestParam Map<String, String> paramMap) throws Exception {
-        return handleGetRequest(mapObjectMapToQueryObject(paramMap, WarConflict.class));
+        return handleGetRequest(mapParamMapToQueryObject(paramMap, WarConflict.class));
+    }
+
+    @GetMapping("/warconflict/query")
+    public GenericResponse getWarConflictFromQuery(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToSqlQuery(paramMap), WarConflict.class);
+    }
+
+    @GetMapping("/supplies")
+    public GenericResponse getSupplies(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToQueryObject(paramMap, Supplies.class));
+    }
+
+    @GetMapping("/supplies/query")
+    public GenericResponse getSuppliesFromQuery(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToSqlQuery(paramMap), Supplies.class);
     }
 
     private <T extends Table> GenericResponse handleGetRequest(T object) {
@@ -58,7 +96,15 @@ public class GetController {
         }
     }
 
-    private <T extends Table> T mapObjectMapToQueryObject(Map<String, String> paramMap, Class<T> objectClazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private <T extends Table> GenericResponse handleGetRequest(String sqlQuery, Class<T> clazz) {
+        try {
+            return new GetResponse<>(true, dao.retrieveFromQuery(sqlQuery, clazz));
+        } catch (Exception e) {
+            return new GenericResponse(false, e.getMessage());
+        }
+    }
+
+    private <T extends Table> T mapParamMapToQueryObject(Map<String, String> paramMap, Class<T> objectClazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         T queryObject = objectClazz.getConstructor(new Class[]{}).newInstance();
         Field[] fields = objectClazz.getDeclaredFields();
 
@@ -83,7 +129,13 @@ public class GetController {
         return queryObject;
     }
 
-    private Object convertToPrimitive(String stringValue, Class<?> fieldType) {
+    private String mapParamMapToSqlQuery(Map<String, String> paramMap) {
+        return paramMap.get(QUERY_PARAM_NAME);
+    }
+
+
+        private Object convertToPrimitive(String stringValue, Class<?> fieldType) {
+        if (stringValue == null) return null;
         if( Boolean.class.equals(fieldType) ) return Boolean.parseBoolean( stringValue );
         if( Byte.class.equals(fieldType) ) return Byte.parseByte( stringValue );
         if( Short.class.equals(fieldType) ) return Short.parseShort( stringValue );

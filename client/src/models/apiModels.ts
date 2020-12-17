@@ -1,16 +1,16 @@
 export class Division {
     static entityName : string = "Divisão";
 
-    nrodivisao : number | null = null;
-    codigoG? : string | null = null;
-    numBaixasD? : number | null = null;
+    nrodivisao? : number | null = null;
+    codigog? : string | null = null;
+    numbaixasd? : number | null = null;
     barcos? : number | null = null;
     tanques? : number | null = null;
     avioes? : number | null = null;
     homens? : number | null = null;
 
     constructor(
-        nrodivisao : number,
+        nrodivisao? : number,
         codigoG? : string,
         numBaixasD? : number,
         barcos? : number,
@@ -19,8 +19,8 @@ export class Division {
         homens? : number
     ) {
         this.nrodivisao = nrodivisao;
-        this.codigoG = codigoG;
-        this.numBaixasD = numBaixasD;
+        this.codigog = codigoG;
+        this.numbaixasd = numBaixasD;
         this.barcos = barcos;
         this.tanques = tanques;
         this.avioes = avioes;
@@ -28,25 +28,25 @@ export class Division {
     }
 
     static getKeys() {
-        return Object.keys(new Division(0));
+        return Object.keys(new Division());
     }
 
     static getInstance() {
-        return new Division(0, "");
+        return new Division();
     }
 }
 
 export class MilitaryChief {
     static entityName : string = "Chefe Militar";
 
-    codigochef : string | null = null;
+    codigochef? : string | null = null;
     faixa? : string | null = null;
     nrodivisao? : number | null = null;
     nomel? : number | null = null;
     codigog? : number | null = null;
 
     constructor(
-        codigochef : string,
+        codigochef? : string,
         faixa? : string,
         nrodivisao? : number,
         nomel? : number,
@@ -60,23 +60,23 @@ export class MilitaryChief {
     }
 
     static getKeys() {
-        return Object.keys(new MilitaryChief(""));
+        return Object.keys(new MilitaryChief());
     }
 
     static getInstance() {
-        return new MilitaryChief("");
+        return new MilitaryChief();
     }
 }
 
 export class MilitaryGroup {
     static entityName : string = "Grupo Armado";
 
-    codigog : string | null = null;
+    codigog? : string | null = null;
     nomegrupo? : string | null = null;
     numbaixasg? : number | null = null;
 
     constructor(
-        codigog : string,
+        codigog? : string,
         nomegrupo? : string,
         numbaixasg? : number
     ) {
@@ -86,23 +86,23 @@ export class MilitaryGroup {
     }
 
     static getKeys() {
-        return Object.keys(new MilitaryGroup(""));
+        return Object.keys(new MilitaryGroup());
     }
 
     static getInstance() {
-        return new MilitaryGroup("");
+        return new MilitaryGroup();
     }
 }
 
 export class PoliticalLeader {
     static entityName : string = "Líder Político";
 
-    nomel : string | null = null;
+    nomel? : string | null = null;
     codigog? : string | null = null;
     apoios? : string[] | null = null;
 
     constructor(
-        nomel : string,
+        nomel? : string,
         codigog? : string,
         apoios? : string[]
     ) {
@@ -112,25 +112,25 @@ export class PoliticalLeader {
     }
 
     static getKeys() {
-        return Object.keys(new PoliticalLeader(""));
+        return Object.keys(new PoliticalLeader());
     }
 
     static getInstance() {
-        return new PoliticalLeader("");
+        return new PoliticalLeader();
     }
 }
 
 export class WarConflict {
     static entityName : string = "Conflito Armado";
 
-    codconflito : string | null = null;
+    codconflito? : string | null = null;
     nome? : string | null = null;
     tipoconf? : string | null = null;
     numferidos? : string | null = null;
     nummortos? : string | null = null;
 
     constructor(
-        codconflito : string,
+        codconflito? : string,
         nome? : string,
         tipoconf? : string,
         numferidos? : string,
@@ -144,11 +144,11 @@ export class WarConflict {
     }
 
     static getKeys() {
-        return Object.keys(new WarConflict(""));
+        return Object.keys(new WarConflict());
     }
 
     static getInstance() {
-        return new WarConflict("");
+        return new WarConflict();
     }
 }
 
@@ -161,4 +161,11 @@ export interface GetResponse {
 export interface GenericResponse {
     success : boolean;
     details : string;
+}
+
+export interface Supplies {
+    codigog: string;
+    nomearma: string;
+    nometraf: string;
+    numarmas: number;
 }

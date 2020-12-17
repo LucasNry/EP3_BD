@@ -118,7 +118,7 @@ public abstract class AbstractDAO {
 
     @SuppressWarnings("unchecked")
     protected <T extends Table> T mapResultToObject(ResultSet result, Class<T> objectClazz) throws IllegalAccessException, InvocationTargetException, InstantiationException, SQLException, NoSuchMethodException, UnsupportedDataTypeException {
-        T returnObject = (T) objectClazz.getConstructor(new Class[]{}).newInstance();
+        T returnObject = objectClazz.getConstructor(new Class[]{}).newInstance();
         Field[] fields = objectClazz.getDeclaredFields();
 
         for (Field field : fields) {
@@ -134,19 +134,25 @@ public abstract class AbstractDAO {
             }
 
             Object fieldValue;
-            if (String.class.equals(field.getType())) {
-                fieldValue = result.getString(fieldName);
-            } else if (Integer.class.equals(field.getType())) {
-                fieldValue = result.getInt(fieldName);
-            } else if (Boolean.class.equals(field.getType())) {
-                fieldValue = result.getBoolean(fieldName);
-            } else {
-                throw new UnsupportedDataTypeException("Unexpected value: " + field.getType());
+            try {
+                if (String.class.equals(field.getType())) {
+                    try {
+                        fieldValue = result.getString(fieldName);
+                    } catch(Exception e) {
+                        fieldValue = result.getString("max");
+                    }
+                } else if (Integer.class.equals(field.getType())) {
+                    fieldValue = result.getInt(fieldName);
+                } else if (Boolean.class.equals(field.getType())) {
+                    fieldValue = result.getBoolean(fieldName);
+                } else {
+                    throw new UnsupportedDataTypeException("Unexpected value: " + field.getType());
+                }
+
+                field.set(returnObject, fieldValue);
+            } catch (Exception e) {
+                field.setAccessible(false);
             }
-
-            field.set(returnObject, fieldValue);
-
-            field.setAccessible(false);
         }
 
         return returnObject;
