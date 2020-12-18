@@ -5,7 +5,9 @@ import { ArmsDealInfo } from './Tabs/ArmsDealInfo';
 import { Cadastro } from './Tabs/Cadastro';
 import { Graph } from './Tabs/Graph';
 import { Top5Conflicts } from './Tabs/Top5Conflicts';
+import { Top5Countries } from './Tabs/Top5Countries';
 import { Top5MilitaryGroups } from './Tabs/Top5MilitaryGroups';
+import { Top5Organizations } from './Tabs/Top5Organizations';
 
 interface tabMap {
   [tabName : string] : any
@@ -18,7 +20,9 @@ function App() {
     "Gráfico": <Graph/>,
     "Listagem de Armas": <ArmsDealInfo/>,
     "Top 5 Conflitos": <Top5Conflicts/>,
-    "Top 5 Grupos Armados": <Top5MilitaryGroups/>
+    "Top 5 Organizações": <Top5Organizations/>,
+    "Top 5 Grupos Armados": <Top5MilitaryGroups/>,
+    "Top País": <Top5Countries/>
   }
   const [selectedTab, setTab] : any = useState<string | null>(tabs[0]);
   return (

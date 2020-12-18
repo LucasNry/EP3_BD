@@ -1,4 +1,5 @@
-import Axios, { AxiosInstance } from "axios";
+import Axios, { AxiosInstance, AxiosResponse } from "axios";
+import { GenericResponse } from "../models/apiModels";
 
 export default class ApiClient {
 
@@ -32,15 +33,11 @@ export default class ApiClient {
         }
     }
 
-    async post(payload: any, object : any) {
-        try {
-            let endpoint: string = this.getEndpoint(object);
-            const response = await this.client.post(endpoint, payload);
+    async post(payload: any, object : any) : Promise<AxiosResponse<GenericResponse>> {
+        let endpoint: string = this.getEndpoint(object);
+        const response = await this.client.post(endpoint, payload);
 
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
+        return response;
     }
 
     getEndpoint(object : any) {

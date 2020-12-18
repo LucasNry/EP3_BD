@@ -1,5 +1,8 @@
+import { AxiosResponse } from "axios";
 import React from "react";
-import { Division, MilitaryChief, MilitaryGroup, PoliticalLeader, WarConflict } from "../models/apiModels";
+import { FailedPostResult } from "../FailedPostResult";
+import { Division, EnrollDivision, GenericResponse, MediatingOrganization, MediationStart, MilitaryChief, MilitaryGroup, PoliticalLeader, WarConflict } from "../models/apiModels";
+import { SuccessPostResult } from "../SuccessPostResult";
 import ApiClient from "../utilities/ApiClient";
 
 interface IProps {
@@ -7,6 +10,7 @@ interface IProps {
 
 interface IState {
   selectedEntity?: any;
+  gennericResponse?: GenericResponse | null;
 }
 
 export class Cadastro extends React.Component<IProps, IState> {
@@ -15,11 +19,12 @@ export class Cadastro extends React.Component<IProps, IState> {
     inputs: Array<HTMLInputElement> = [];
 
     constructor(props : any) {
-        super(props)
+        super(props);
         this.apiClient = new ApiClient();
-        this.entities = [Division, MilitaryChief, MilitaryGroup, PoliticalLeader, WarConflict];
+        this.entities = [Division, MilitaryChief, MilitaryGroup, PoliticalLeader, WarConflict, MediatingOrganization, MediationStart, EnrollDivision];
         this.state = {
             selectedEntity: this.entities[0],
+            gennericResponse: null
         }
     }
 
@@ -33,27 +38,35 @@ export class Cadastro extends React.Component<IProps, IState> {
         return this.entities[0];
     }
 
-    assembleAndSend() {
+    async assembleAndSend() {
         let requestObject: {[k:string]: any} = {};
         
         this.inputs.forEach(
             (input) => { if(input != null || input !== undefined) { requestObject[input?.id] = input?.value }}
         )
 
-        console.log(requestObject)
+        const response : AxiosResponse<GenericResponse> = await this.apiClient.post(requestObject, this.getEntityByName(this.state.selectedEntity).getInstance());
 
-        this.apiClient.post(requestObject, this.getEntityByName(this.state.selectedEntity).getInstance())
+        this.setState({
+            ...this.state,
+            gennericResponse: response.data,
+        })
     }
 
     render() {
-        const entities = [Division, MilitaryChief, MilitaryGroup, PoliticalLeader, WarConflict];
         this.inputs = [];
 
         return (
             <div className="Cadastro">
+                {
+                   this.state.gennericResponse != null ? this.state.gennericResponse.success ? <SuccessPostResult/> : <FailedPostResult errorMessage={this.state.gennericResponse?.details}/> : null
+                }
+                <br/><br/>
+                <p>Permita cadastrar divisões dentro de um grupo militar, cadastre conflitos bélicos, grupos militares, líderes políticos e chefes militares</p>
+                <br/>
                 <select name="entitySelect" id="entityPicker" value={this.state.selectedEntity} onChange={(e) => this.setState({selectedEntity: e.target.value})}>
                     {
-                        entities.map((entity) => <option key={entity.entityName} value={entity.entityName}>{entity.entityName}</option>)
+                        this.entities.map((entity) => <option key={entity.entityName} value={entity.entityName}>{entity.entityName}</option>)
                     }
                 </select>
                 <br/>

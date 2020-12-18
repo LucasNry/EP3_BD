@@ -13,7 +13,7 @@ import lombok.Setter;
 public class MilitaryChief extends Table {
 
     private static final String TABLE_NAME = "chefemilitar";
-    private static final String CODIGO_CHEF = "codigochef";
+    private static final String CODIGO_CHEF = "codigo_chef";
     private static final String FAIXA = "faixa";
     private static final String NRO_DIVISAO = "nrodivisao";
     private static final String NOME_L = "nomel";
@@ -29,7 +29,7 @@ public class MilitaryChief extends Table {
     private Integer nroDivisao;
 
     @Attribute(name = NOME_L)
-    private Integer nomeL;
+    private String nomeL;
 
     @Attribute(name = CODIGO_G)
     private Integer codigoG;
@@ -38,7 +38,7 @@ public class MilitaryChief extends Table {
             @JsonProperty(CODIGO_CHEF) String codigoChef,
             @JsonProperty(FAIXA) String faixa,
             @JsonProperty(NRO_DIVISAO) Integer nroDivisao,
-            @JsonProperty(NOME_L) Integer nomeL,
+            @JsonProperty(NOME_L) String nomeL,
             @JsonProperty(CODIGO_G) Integer codigoG
     ) {
         super(TABLE_NAME);

@@ -32,6 +32,12 @@ public class BackendApplication {
 				registry.addMapping("/warconflict/query").allowedOrigins(ADDRESS);
 				registry.addMapping("/supplies").allowedOrigins(ADDRESS);
 				registry.addMapping("/supplies/query").allowedOrigins(ADDRESS);
+				registry.addMapping("/mediationstart").allowedOrigins(ADDRESS);
+				registry.addMapping("/mediationstart/query").allowedOrigins(ADDRESS);
+				registry.addMapping("/mediatingorganization").allowedOrigins(ADDRESS);
+				registry.addMapping("/mediatingorganization/query").allowedOrigins(ADDRESS);
+				registry.addMapping("/conflictcountry").allowedOrigins(ADDRESS);
+				registry.addMapping("/conflictcountry/query").allowedOrigins(ADDRESS);
 			}
 		};
 	}

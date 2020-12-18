@@ -10,12 +10,12 @@ public class EnrollDivisionRequest {
     private static final String NRO_DIVISAO = "nrodivisao";
     private static final String CODIGO_G = "codigog";
 
-    private int nroDivisao;
+    private Integer nroDivisao;
 
     private String codigoG;
 
     public EnrollDivisionRequest(
-            @JsonProperty(NRO_DIVISAO) int nroDivisao,
+            @JsonProperty(NRO_DIVISAO) Integer nroDivisao,
             @JsonProperty(CODIGO_G) String codigoG
     ) {
         this.nroDivisao = nroDivisao;

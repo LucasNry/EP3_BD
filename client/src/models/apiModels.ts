@@ -152,6 +152,95 @@ export class WarConflict {
     }
 }
 
+export class EnrollDivision {
+    static entityName : string = "Cadastrar Divisão em Grupo Miltiar";
+
+    nrodivisao? : number | null = null;
+    codigog? : string | null = null;
+
+    constructor(
+        nrodivisao? : number,
+        codigog? : string,
+    ) {
+        this.nrodivisao  = nrodivisao;
+        this.codigog = codigog;
+    }
+
+    static getKeys() {
+        return Object.keys(new EnrollDivision());
+    }
+
+    static getInstance() {
+        return new EnrollDivision();
+    }
+}
+
+export class MediationStart {
+    static entityName : string = "Entrada Mediação";
+
+    codigoorg?: string;
+    codconflito?: string;
+    de_media?: string;
+
+    constructor(
+        codigoorg?: string,
+        codconflito?: string,
+        de_media?: string
+    ) {
+        this.codigoorg  = codigoorg;
+        this.codconflito = codconflito;
+        this.de_media = de_media;
+    }
+
+    static getKeys() {
+        return Object.keys(new MediationStart());
+    }
+
+    static getInstance() {
+        return new MediationStart();
+    }
+}
+
+export class MediatingOrganization {
+    static entityName : string = "Organização Mediadora";
+
+    codigoorg?: string;
+    nomeorg?: string;
+    tipo?: string;
+    tipoajuda?: string;
+    orglider?: string;
+    numpessoas?: number;
+
+    constructor(
+        codigoorg?: string,
+        nomeorg?: string,
+        tipo?: string,
+        tipoajuda?: string,
+        orglider?: string,
+        numpessoas?: number
+    ) {
+        this.codigoorg = codigoorg;
+        this.nomeorg = nomeorg;
+        this.tipo = tipo;
+        this.tipoajuda = tipoajuda;
+        this.orglider = orglider;
+        this.numpessoas = numpessoas;
+    }
+
+    static getKeys() {
+        return Object.keys(new MediatingOrganization());
+    }
+
+    static getInstance() {
+        return new MediatingOrganization();
+    }
+}
+
+export interface ConflictCountry {
+    codconflito : string;
+    pais : string;
+}
+
 export interface GetResponse {
     success : boolean;
     details : string;

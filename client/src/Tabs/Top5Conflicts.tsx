@@ -42,6 +42,8 @@ export class Top5Conflicts extends React.Component<IProps, IState> {
 
         return (
             <div className="Cadastro">
+                <p>Listar os 5 maiores conflitos em número de mortos</p>
+                <br/>
                 {
                     this.state.conflicts.length > 0 ? 
                     <table>
@@ -54,8 +56,8 @@ export class Top5Conflicts extends React.Component<IProps, IState> {
                                 (conflict) => {
                                     return (
                                         <tr>
-                                            <td>{conflict.nome}</td>
-                                            <td>{conflict.nummortos}</td>
+                                            <td>{conflict?.nome}</td>
+                                            <td>{conflict?.nummortos}</td>
                                         </tr>
                                     );
                                 }

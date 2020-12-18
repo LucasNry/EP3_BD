@@ -30,7 +30,7 @@
   font-family: 'Courier New', Courier, monospace;
   font-weight: bolder;
   border-right: 1.5px solid black;
-  min-width: 25vh;
+  min-width: 15vh;
   transition: ease-in-out 0.1s;
 }
 
@@ -39,6 +39,7 @@
 }
 
 table, th, tr, td {
+  margin: 0 auto;
   padding: 5px;
   border: 1px solid black;
   border-collapse: collapse;
@@ -70,4 +71,20 @@ table, th, tr, td {
 
 .propertyName {
   padding-right: 10px;
+}
+
+.FailedResultTab {
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f03832;
+  color: white;
+  text-align: center;
+}
+
+.SuccessResultTab {
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #69da00;
+  color: white;
+  text-align: center;
 }

@@ -1,6 +1,8 @@
 package com.bdproject.backend.controllers;
 
 import com.bdproject.backend.models.Division;
+import com.bdproject.backend.models.MediatingOrganization;
+import com.bdproject.backend.models.MediationStart;
 import com.bdproject.backend.models.MilitaryChief;
 import com.bdproject.backend.models.MilitaryGroup;
 import com.bdproject.backend.models.PoliticalLeader;
@@ -16,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.SQLException;
 
 @RestController
 public class PostController {
@@ -53,6 +57,16 @@ public class PostController {
         return handlePostRequest(supplies);
     }
 
+    @PostMapping("/mediationstart")
+    public ResponseEntity postMediationStart(@RequestBody MediationStart supplies) {
+        return handlePostRequest(supplies);
+    }
+
+    @PostMapping("/mediatingorganization")
+    public ResponseEntity postMediatingOrganization(@RequestBody MediatingOrganization supplies) {
+        return handlePostRequest(supplies);
+    }
+
     @PostMapping("/division/enroll")
     public ResponseEntity postDivisionIntoMilitaryGroup(@RequestBody EnrollDivisionRequest request) throws Exception {
         Division division = new Division();
@@ -60,25 +74,33 @@ public class PostController {
         MilitaryGroup militaryGroup = new MilitaryGroup();
         militaryGroup.setCodigoG(request.getCodigoG());
 
-        boolean success = dao.saveDivisionIntoMilitaryGroup(division, militaryGroup);
-        GenericResponse response = new GenericResponse(success);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(response);
-    }
-
-    private <T extends Table> ResponseEntity handlePostRequest(T object) {
         try {
-            boolean success = dao.saveFromModel(object);
-            GenericResponse response = new GenericResponse(success);
+            dao.saveDivisionIntoMilitaryGroup(division, militaryGroup);
+            GenericResponse response = new GenericResponse(true);
+
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(response);
         } catch (Exception e) {
-            GenericResponse response = new GenericResponse(false);
+            GenericResponse response = new GenericResponse(true, e.getMessage());
+
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.OK)
+                    .body(response);
+        }
+    }
+
+    private <T extends Table> ResponseEntity handlePostRequest(T object) {
+        try {
+            dao.saveFromModel(object);
+            GenericResponse response = new GenericResponse(true);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(response);
+        } catch (Exception e) {
+            GenericResponse response = new GenericResponse(false, e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.OK)
                     .body(response);
         }
     }

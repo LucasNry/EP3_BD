@@ -1,7 +1,10 @@
 package com.bdproject.backend.controllers;
 
 import com.bdproject.backend.annotations.PrimaryKey;
+import com.bdproject.backend.models.ConflictCountry;
 import com.bdproject.backend.models.Division;
+import com.bdproject.backend.models.MediatingOrganization;
+import com.bdproject.backend.models.MediationStart;
 import com.bdproject.backend.models.MilitaryChief;
 import com.bdproject.backend.models.MilitaryGroup;
 import com.bdproject.backend.models.PoliticalLeader;
@@ -86,6 +89,36 @@ public class GetController {
     @GetMapping("/supplies/query")
     public GenericResponse getSuppliesFromQuery(@RequestParam Map<String, String> paramMap) throws Exception {
         return handleGetRequest(mapParamMapToSqlQuery(paramMap), Supplies.class);
+    }
+
+    @GetMapping("/mediationstart")
+    public GenericResponse getMediationStart(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToQueryObject(paramMap, MediationStart.class));
+    }
+
+    @GetMapping("/mediationstart/query")
+    public GenericResponse getMediationStartFromQuery(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToSqlQuery(paramMap), MediationStart.class);
+    }
+
+    @GetMapping("/mediatingorganization")
+    public GenericResponse getMediatingOrganization(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToQueryObject(paramMap, MediatingOrganization.class));
+    }
+
+    @GetMapping("/mediatingorganization/query")
+    public GenericResponse getMediatingOrganizationFromQuery(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToSqlQuery(paramMap), MediatingOrganization.class);
+    }
+
+    @GetMapping("/conflictcountry")
+    public GenericResponse getConflictCountry(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToQueryObject(paramMap, ConflictCountry.class));
+    }
+
+    @GetMapping("/conflictcountry/query")
+    public GenericResponse getConflictCountryFromQuery(@RequestParam Map<String, String> paramMap) throws Exception {
+        return handleGetRequest(mapParamMapToSqlQuery(paramMap), ConflictCountry.class);
     }
 
     private <T extends Table> GenericResponse handleGetRequest(T object) {

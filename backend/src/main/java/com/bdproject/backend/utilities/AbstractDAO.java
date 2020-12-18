@@ -26,11 +26,11 @@ public abstract class AbstractDAO {
 
     public abstract <T extends Table> List<T> retrieveFromModel(T object) throws IllegalAccessException, SQLException, InvocationTargetException, InstantiationException, NoSuchMethodException, UnsupportedDataTypeException;
 
-    public abstract <T extends Table> boolean saveFromModel(T object) throws IllegalAccessException;
+    public abstract <T extends Table> void saveFromModel(T object) throws IllegalAccessException, SQLException;
 
-    public abstract boolean saveDivisionIntoMilitaryGroup(Division division, MilitaryGroup militaryGroup) throws IllegalAccessException, SQLException, InstantiationException, NoSuchMethodException, InvocationTargetException, UnexpectedException, UnsupportedDataTypeException;
+    public abstract void saveDivisionIntoMilitaryGroup(Division division, MilitaryGroup militaryGroup) throws IllegalAccessException, SQLException, InstantiationException, NoSuchMethodException, InvocationTargetException, UnexpectedException, UnsupportedDataTypeException;
 
-    public abstract boolean updateDivision(Division division) throws IllegalAccessException;
+    public abstract void updateDivision(Division division) throws IllegalAccessException, SQLException;
 
     @SuppressWarnings("unchecked")
     protected String mapObjectToInsertQuery(Table instance) throws IllegalAccessException {

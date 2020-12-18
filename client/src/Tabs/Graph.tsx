@@ -68,6 +68,8 @@ export class Graph extends React.Component<IProps, IState> {
         return (
             <div className="Cadastro">
                 <div>
+                    <p>Gerar um gráfico, histograma, por tipo de conflito e número de conflitos.</p>
+                    <br/>
                     {
                         this.state.names.length > 0 && this.state.values.length > 0 ? <Plot 
                         data={[

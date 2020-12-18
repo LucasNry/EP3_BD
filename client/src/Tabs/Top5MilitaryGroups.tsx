@@ -38,7 +38,6 @@ export class Top5MilitaryGroups extends React.Component<IProps, IState> {
             query: "select codigog from fornece group by codigog order by SUM(numarmas) desc limit 5;"
         };
         let response : GetSuppliesResponse = await this.apiClient.getFromQuery(endpoint, requestParams);
-        console.log(response)
         let militaryGroupCodes : Array<string> = response.items.map((supplies) => supplies.codigog || "");
         let militaryGroups : Array<MilitaryGroup> = await this.getGroups(militaryGroupCodes)
         
@@ -64,6 +63,8 @@ export class Top5MilitaryGroups extends React.Component<IProps, IState> {
 
         return (
             <div className="Cadastro">
+                <p>Listar os 5 maiores grupos armados com maior número de armas fornecidos.</p>
+                <br/>
                 {
                     this.state.militaryGroups.length > 0 ? 
                     <table>
@@ -75,7 +76,7 @@ export class Top5MilitaryGroups extends React.Component<IProps, IState> {
                                 (militaryGroup) => {
                                     return (
                                         <tr>
-                                            <td>{militaryGroup.nomegrupo}</td>
+                                            <td>{militaryGroup?.nomegrupo}</td>
                                         </tr>
                                     );
                                 }

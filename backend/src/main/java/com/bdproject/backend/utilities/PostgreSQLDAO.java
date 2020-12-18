@@ -15,12 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Component
 public class PostgreSQLDAO extends AbstractDAO {
@@ -59,13 +54,13 @@ public class PostgreSQLDAO extends AbstractDAO {
         return (List<T>) retrieve(sqlQuery, clazz);
     }
 
-    public <T extends Table> boolean saveFromModel(T object) throws IllegalAccessException {
+    public <T extends Table> void saveFromModel(T object) throws IllegalAccessException, SQLException {
         String sqlQuery = mapObjectToInsertQuery(object);
-        return save(sqlQuery);
+        save(sqlQuery);
     }
 
     @Override
-    public boolean saveDivisionIntoMilitaryGroup(Division division, MilitaryGroup militaryGroup) throws IllegalAccessException, SQLException, InstantiationException, NoSuchMethodException, InvocationTargetException, UnexpectedException, UnsupportedDataTypeException {
+    public void saveDivisionIntoMilitaryGroup(Division division, MilitaryGroup militaryGroup) throws IllegalAccessException, SQLException, InstantiationException, NoSuchMethodException, InvocationTargetException, UnexpectedException, UnsupportedDataTypeException {
         List<MilitaryGroup> groupList = retrieveFromModel(militaryGroup);
         List<Division> divisionList = retrieveFromModel(division);
 
@@ -82,13 +77,13 @@ public class PostgreSQLDAO extends AbstractDAO {
 
         div.setCodigoG(group.getCodigoG());
 
-        return updateDivision(div);
+        updateDivision(div);
     }
 
     @Override
-    public boolean updateDivision(Division division) throws IllegalAccessException {
+    public void updateDivision(Division division) throws IllegalAccessException, SQLException {
         String sqlQuery = mapObjectToUpdateQuery(division);
-        return save(sqlQuery);
+        save(sqlQuery);
     }
 
     private Object retrieve(String sqlQuery, Class<? extends Table> clazz) throws SQLException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException, UnsupportedDataTypeException {
@@ -104,12 +99,7 @@ public class PostgreSQLDAO extends AbstractDAO {
         return returnList;
     }
 
-    private boolean save(String insertQuery) {
-        try {
-            statement.executeUpdate(insertQuery);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    private void save(String insertQuery) throws SQLException {
+        statement.executeUpdate(insertQuery);
     }
 }
